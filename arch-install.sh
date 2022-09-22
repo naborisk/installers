@@ -4,7 +4,7 @@
 #set -x
 
 # Check is /mnt is mounted, quit if not
-if mountpoint -q /mnt; then
+if [mountpoint -q /mnt] && [mountpoint -q /mnt/efi]; then
     echo "Starting install..."
 else
     echo "Please mount the target disk to /mnt and its efi to /mnt/efi"
