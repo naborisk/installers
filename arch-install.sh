@@ -74,6 +74,9 @@ arch-chroot /mnt usermod -aG wheel $USERNAME
 # Edit sudoers file and add user to group wheel
 echo '%wheel ALL=(ALL:ALL) ALL' > /mnt/etc/sudoers.d/wheel
 
+# unmount before generating fstab so that the bind mount wont stick
+umount /mnt/boot
+
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
