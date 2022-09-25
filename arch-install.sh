@@ -17,6 +17,12 @@ DEVICE=$(df /mnt/ | awk 'END{print $1}')
 read -p 'Hostname: ' HOSTNAME
 read -p 'Username: ' USERNAME
 
+# prepare folder for kernel install
+mkdir /mnt/efi/arch
+mkdir /mnt/boot
+mount --bind /mnt/efi/arch /mnt/boot
+
+
 pacstrap /mnt base linux linux-firmware neovim sudo zsh neofetch networkmanager intel-ucode
 
 # Set local time
@@ -39,8 +45,8 @@ echo 127.0.1.1	$HOSTNAME.localdomain	$HOSTNAME >> /mnt/etc/hosts
 arch-chroot /mnt systemctl enable NetworkManager
 
 # Copy boot files to EFI
-mkdir /mnt/efi/arch
-cp /mnt/boot/* /mnt/efi/arch/
+#mkdir /mnt/efi/arch
+#cp /mnt/boot/* /mnt/efi/arch/
 
 # Installing and configuring systemd-boot
 arch-chroot /mnt bootctl install --no-variables
