@@ -19,9 +19,6 @@ read -p 'Username: ' USERNAME
 
 pacstrap /mnt base linux linux-firmware neovim sudo zsh neofetch networkmanager intel-ucode
 
-# Generate fstab
-genfstab -U /mnt >> /mnt/etc/fstab
-
 # Set local time
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/Japan /etc/localtime
 arch-chroot /mnt hwclock --systohc
@@ -71,6 +68,12 @@ arch-chroot /mnt usermod -aG wheel $USERNAME
 
 # Edit sudoers file and add user to group wheel
 echo '%wheel ALL=(ALL:ALL) ALL' > /mnt/etc/sudoers.d/wheel
+
+# bind mount (to allow for kernel updates)
+mount --bind /mnt/efi/arch /mnt/boot
+
+# Generate fstab
+genfstab -U /mnt >> /mnt/etc/fstab
 
 # Set password for the admin user
 arch-chroot /mnt passwd $USERNAME
