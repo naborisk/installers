@@ -69,11 +69,11 @@ arch-chroot /mnt usermod -aG wheel $USERNAME
 # Edit sudoers file and add user to group wheel
 echo '%wheel ALL=(ALL:ALL) ALL' > /mnt/etc/sudoers.d/wheel
 
-# bind mount (to allow for kernel updates)
-mount --bind /mnt/efi/arch /mnt/boot
-
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
+
+echo "# bind /efi/arch to /boot to allow for kernel upgrades" >> /mnt/etc/fstab
+echo "/efi/arch /boot none defaults,bind 0 0" >> /mnt/etc/fstab
 
 # Set password for the admin user
 arch-chroot /mnt passwd $USERNAME
