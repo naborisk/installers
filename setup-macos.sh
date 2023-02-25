@@ -28,6 +28,3 @@ brew cleanup -s
 
 # install Mac App Store apps
 mas install $MAS_APPS
-
-# install pure prompt
-sh install-pure.sh
