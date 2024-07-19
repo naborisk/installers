@@ -6,6 +6,9 @@
 fdisk -l
 
 read -p 'Disk to install to: ' DISK_DEVICE
+echo "Selected disk: $DISK_DEVICE"
+fdisk -l $DISK_DEVICE
+
 read -p 'Hostname: ' HOSTNAME
 read -p 'Username: ' USERNAME
 
