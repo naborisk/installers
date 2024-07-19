@@ -3,15 +3,20 @@
 
 #set -x
 
-if [ $# -eq 0 ]; then
-  cat <<EOF
-Usage: $0 /dev/sdX
-  Where /dev/sdX is the disk you want to install Arch Linux on.
-EOF
+fdisk -l
+
+read -p 'Disk to install to: ' DISK_DEVICE
+read -p 'Hostname: ' HOSTNAME
+read -p 'Username: ' USERNAME
+
+is_mounted() {
+  mount | grep $1 > /dev/null
+}
+
+if is_mounted $DISK_DEVICE; then
+  echo "Disk is mounted. Please unmount it first"
   exit 1
 fi
-
-DISK_DEVICE=$1
 
 # partition disk with 512M EFI partition and the rest for root
 fdisk $DISK_DEVICE <<EOF
@@ -46,9 +51,6 @@ DEVICE=$(df /mnt/ | awk 'END{print $1}')
 
 FS_TYPE=$(df -Th /mnt/ | awk 'END{print $2}')
 DEVICE=$(df /mnt/ | awk 'END{print $1}')
-
-read -p 'Hostname: ' HOSTNAME
-read -p 'Username: ' USERNAME
 
 # prepare folder for kernel install
 mkdir /mnt/efi/arch
