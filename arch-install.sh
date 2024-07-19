@@ -3,13 +3,46 @@
 
 #set -x
 
-# Check is /mnt is mounted, quit if not
-if mountpoint -q /mnt/efi; then
-    echo "Starting install..."
-else
-    echo "Please mount the target disk to /mnt and its efi to /mnt/efi"
-    exit
+if [ $# -eq 0 ]; then
+  cat <<EOF
+Usage: $0 /dev/sdX
+  Where /dev/sdX is the disk you want to install Arch Linux on.
+EOF
+  exit 1
 fi
+
+DISK_DEVICE=$1
+
+# partition disk with 512M EFI partition and the rest for root
+fdisk $DISK_DEVICE <<EOF
+g
+n
+1
+2048
++512M
+t
+1
+n
+2
+
+
+t
+2
+23
+w
+EOF
+
+mkfs -t msdos ${DISK_DEVICE}1
+mkfs.btrfs ${DISK_DEVICE}2
+
+mount ${DISK_DEVICE}2 /mnt
+
+mkdir /mnt/efi
+mount ${DISK_DEVICE}1 /mnt/efi
+
+FS_TYPE=$(df -Th /mnt/ | awk 'END{print $2}')
+DEVICE=$(df /mnt/ | awk 'END{print $1}')
+
 
 FS_TYPE=$(df -Th /mnt/ | awk 'END{print $2}')
 DEVICE=$(df /mnt/ | awk 'END{print $1}')
