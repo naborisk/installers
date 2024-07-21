@@ -40,17 +40,21 @@ t
 w
 EOF
 
-mkfs -t msdos ${DISK_DEVICE}1
-mkfs.btrfs ${DISK_DEVICE}2
+# determine partitions using sed and "lsblk -nlpo NAME ${DISK_DEVICE}"
+PARTITION_1=$(lsblk -nlpo NAME ${DISK_DEVICE} | sed -n 2p)
+PARTITION_2=$(lsblk -nlpo NAME ${DISK_DEVICE} | sed -n 3p)
 
-mount ${DISK_DEVICE}2 /mnt
+# make EFI partition
+mkfs -t msdos $PARTITION_1
 
-mkdir /mnt/efi
-mount ${DISK_DEVICE}1 /mnt/efi
+# make root partition
+mkfs.btrfs $PARTITION_2
 
-FS_TYPE=$(df -Th /mnt/ | awk 'END{print $2}')
-DEVICE=$(df /mnt/ | awk 'END{print $1}')
+mkdir -p /mnt
+mount $PARTITION_2 /mnt
 
+mkdir -p /mnt/efi
+mount $PARTITION_1 /mnt/efi
 
 FS_TYPE=$(df -Th /mnt/ | awk 'END{print $2}')
 DEVICE=$(df /mnt/ | awk 'END{print $1}')
