@@ -64,7 +64,7 @@ mkdir /mnt/efi/arch
 mkdir /mnt/boot
 mount --bind /mnt/efi/arch /mnt/boot
 
-pacstrap /mnt base linux linux-firmware neovim sudo zsh neofetch networkmanager intel-ucode
+pacstrap /mnt base linux linux-firmware neovim sudo zsh networkmanager intel-ucode
 
 # Set local time
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/Japan /etc/localtime
